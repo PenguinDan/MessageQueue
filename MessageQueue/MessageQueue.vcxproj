@@ -115,7 +115,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Receiver1.cpp" />
+    <ClCompile Include="Receiver2.cpp" />
     <ClCompile Include="Sender251.cpp" />
+    <ClCompile Include="Sender257.cpp" />
     <ClCompile Include="Sender997.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

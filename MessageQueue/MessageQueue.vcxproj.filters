@@ -21,5 +21,14 @@
     <ClCompile Include="Sender251.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sender257.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Receiver1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Receiver2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
