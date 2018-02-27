@@ -22,12 +22,28 @@ int generateRandomNum();
 void initializeSRand();
 
 int main(){
+
+    int qid = msgget(ftok(".",'u'), SENDER_ID);
+
     struct buf{
         long mtype;
         //Define message size
         char message[MESSAGE_SIZE];
     };buf msg;
     initializeSRand();
+
+    msg.mtype = 0; //add mtype
+    strcpy(msg.message, "Hello")
+    cout<< getpid() << ":sends greeting" <<endl;
+    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+
+    msgrcv(qid, (struct msgbuf *)&msg, size, 314, 0);
+  	cout << getpid() << ": gets reply" << endl;
+  	cout << "reply: " << msg.greeting << endl;
+  	cout << getpid() << ": now exits" << endl;
+
+  	msg.mtype = 117;
+  	msgsnd (qid, (struct msgbuf *)&msg, size, 0);
 }
 
 //Generate a random number
