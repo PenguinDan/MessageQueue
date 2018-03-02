@@ -24,13 +24,13 @@ void initializeSRand();
 
 struct buf{
     long mtype;
-    long senderID;
+    //long senderID;
     //Define message size
     char message[MESSAGE_SIZE];
   };
 
 int retrieveMessageSize(buf message) {
-    return sizeof(message) - sizeof(long) - sizeof(long);
+    return sizeof(message) - sizeof(long) ;//- sizeof(long);
   };
 
 
@@ -43,7 +43,7 @@ int main(){
 
     int messageSize = retrieveMessageSize(msg);
     msg.mtype = 0;
-    msg.senderID = SENDER_ID;
+    //msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 1");
     msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
     cout<< " Message Sent to Reciever 1" <<endl;
