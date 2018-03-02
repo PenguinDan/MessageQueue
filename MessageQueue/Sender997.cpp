@@ -22,16 +22,23 @@ const int MESSAGE_SIZE = 50;
 int generateRandomNum();
 void initializeSRand();
 
+struct buf{
+    long mtype;
+    long senderID;
+    //Define message size
+    char message[MESSAGE_SIZE];
+  };
+
+int retrieveMessageSize(buf message) {
+    return sizeof(message) - sizeof(long) - sizeof(long);
+  };
+
+
 int main(){
 
     int qid = msgget(ftok(".",'u'), 0);
 
-    struct buf{
-        long mtype;
-        long senderID;
-        //Define message size
-        char message[MESSAGE_SIZE];
-    };buf msg;
+    buf msg;
     initializeSRand();
 
     int messageSize = retrieveMessageSize(msg);
@@ -62,9 +69,7 @@ int main(){
     */
 
 }
-int retrieveMessageSize(buffer message) {
-    return sizeof(message) - sizeof(long) - sizeof(long);
-}
+
 //Generate a random number
 int generateRandomNum(){
     return rand() % INT_MAX;
