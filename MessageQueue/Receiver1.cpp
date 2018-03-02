@@ -1,11 +1,11 @@
 /*
-* Each receiver repeatedly gets a message and displays the value and the Sender’s identity
-* Receiver #1
-*    Accepts from who:
-*       Only accepts messages from 251 AND 997 SENDERS
-*    Termination cause:
-*       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
-*/
+ * Each receiver repeatedly gets a message and displays the value and the Sender’s identity
+ * Receiver #1
+ *    Accepts from who:
+ *       Only accepts messages from 251 AND 997 SENDERS
+ *    Termination cause:
+ *       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
+ */
 
 //All of the necessary libraries for the program to run
 #include <sys/types.h>
@@ -32,100 +32,100 @@ const int RECEIVABLE_MESSAGE_TYPE = 0;
 const int MESSAGE_FLAG = 0;
 //Message buffer
 struct buffer {
-	long mtype;
-	long senderId;
-	char message[MESSAGE_SIZE];
+    long mType;
+    long senderId;
+    char message[MESSAGE_SIZE];
 };
 //Forward declaring methods
 int allocateQueue();
 int retrieveMessageSize(buffer);
-
+void sendMessageAcknowledgement(int , buffer , int , int);
 void receiveMessage(int, buffer, int, long, int);
 
 /*
-* The main starting point of the application
-*/
+ * The main starting point of the application
+ */
 int main() {
-
-	//The Queue ID of the message queue
-	int messageQueueId = allocateQueue();
-
-	//Build buffer for message acknowledgement to sender 997
-	buffer ackMessage;
-	sendMessage.mType = 2;
-	sendMessage.senderId = 997;
-	strcpy(ackMessage.message, "Acknowledgement from Receiver 1");
-
-	buffer rMessage;
-	int messageSize = retrieveMessageSize(message);
-
-	//Variable that keeps track of total received messages
-	int receivedMessagesCount = 0;
-
-	while(receivedMessagesCount < 5000) {
-		receiveMessage(
-			messageQueueId,
-			message,
-			messageSize,
-			RECEIVABLE_MESSAGE_TYPE,
-			MESSAGE_FLAG
-		);
-
-		//Print out the received message
-		cout << rMessage.message << endl;
-		receivedMessagesCount += 1;
-
-		if(rMessage.senderId == ackMessage.senderId) {
-			sendMessageAcknowledgement(messageQueueId, ackMessage, messageSize, MESSAGE_FLAG);
-		}
-	}
-
-	exit(0);
+    
+    //The Queue ID of the message queue
+    int messageQueueId = allocateQueue();
+    
+    //Build buffer for message acknowledgement to sender 997
+    buffer ackMessage;
+    ackMessage.mType = 2;
+    ackMessage.senderId = 997;
+    strcpy(ackMessage.message, "Acknowledgement from Receiver 1");
+    
+    buffer rMessage;
+    int messageSize = retrieveMessageSize(rMessage);
+    
+    //Variable that keeps track of total received messages
+    int receivedMessagesCount = 0;
+    
+    while(receivedMessagesCount < 5000) {
+        receiveMessage(
+                       messageQueueId,
+                       rMessage,
+                       messageSize,
+                       RECEIVABLE_MESSAGE_TYPE,
+                       MESSAGE_FLAG
+                       );
+        
+        //Print out the received message
+        cout << rMessage.message << endl;
+        receivedMessagesCount += 1;
+        
+        if(rMessage.senderId == ackMessage.senderId) {
+            sendMessageAcknowledgement(messageQueueId, ackMessage, messageSize, MESSAGE_FLAG);
+        }
+    }
+    
+    exit(0);
 }
 
 /*
-*	Wrapper method that allocates and creates a queue where message objects are
-* saved
-*
-* @Param: None
-*
-*	@Return: A message queue identifier
-*/
+ *    Wrapper method that allocates and creates a queue where message objects are
+ * saved
+ *
+ * @Param: None
+ *
+ *    @Return: A message queue identifier
+ */
 int allocateQueue() {
-	cout << "Allocating Message Queue" << endl;
-	int id = 'u';
-	return msgget(ftok(".", id), IPC_EXCL|IPC_CREAT|0777);
+    cout << "Allocating Message Queue" << endl;
+    int id = 'u';
+    return msgget(ftok(".", id), IPC_EXCL|IPC_CREAT|0777);
 }
 
 /*
-* Wrapper method that outputs the size of the message to be received
-*
-*	@Param:
-*	buffer message: The message buffer to be received
-*
-* @Return: The size of the message to be received
-*/
+ * Wrapper method that outputs the size of the message to be received
+ *
+ *    @Param:
+ *    buffer message: The message buffer to be received
+ *
+ * @Return: The size of the message to be received
+ */
 int retrieveMessageSize(buffer message) {
-	return sizeof(message) - sizeof(long) - sizeof(long);
+    return sizeof(message) - sizeof(long) - sizeof(long);
 }
 
 /*
-* Receives a message specifically through the given arguments
-*
-*@Param:
-*int queueId: The message queue id
-*buffer message: The message buffer object received
-*int messageSize: The size of the message to be received
-*long messageType: The message type specified by the received object
-*int messageFlag: The flag that specifies the type of the message requested
-*
-*@Return: None
-*
-*/
+ * Receives a message specifically through the given arguments
+ *
+ *@Param:
+ *int queueId: The message queue id
+ *buffer message: The message buffer object received
+ *int messageSize: The size of the message to be received
+ *long messageType: The message type specified by the received object
+ *int messageFlag: The flag that specifies the type of the message requested
+ *
+ *@Return: None
+ *
+ */
 void receiveMessage(int queueId, buffer message, int messageSize, long messageType, int messageFlag) {
-	msgrccv(queueId, (struct buffer *)&message, messageSize, messageType, messageFlag);
+    msgrcv(queueId, (struct buffer *)&message, messageSize, messageType, messageFlag);
 }
 
 void sendMessageAcknowledgement(int queueId, buffer message, int messageSize, int messageFlag) {
-	msgsnd(queueId, (struct msgbuf *)&message, messageSize, messageFlag);
+    msgsnd(queueId, (struct msgbuf *)&message, messageSize, messageFlag);
 }
