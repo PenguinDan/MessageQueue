@@ -20,21 +20,34 @@ using namespace std;
 //Message sender ID
 const int SENDER_ID = 251;
 const int MESSAGE_SIZE = 50;
+const int SENT_TO = 1;
 
 int generateRandomNum();
 void initializeSRand();
+int allocateQueue();
 
 //Create a struct for message buffer
 struct buf{
+    //Define the mtype
     long mtype;
+    //Define the sender id number
+    long senderID;
     //Define message size
     char message[MESSAGE_SIZE];
+    
 };
 
 int main(){
-    int qid = msgget(ftok(".",'u'), SENDER_ID);
-    buf msg;
+    int qid = allocateQueue();
+    int size = sizeof(msg) - sizeof(long) - sizeof(long);
     initializeSRand();
+    buf msg;
+    msg.senderID = 251;
+    msg.mtype = 0;
+    
+    strcpy(msg.message, "This is sender 251.");
+    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+    
 }
 
 /*
@@ -53,4 +66,16 @@ int generateRandomNum(){
  */
 void initializeSRand(){
     srand((int) time(NULL));
+}
+
+/*
+ *    Allocates a queue where message objects are saved
+ *
+ * @Param: None
+ *
+ *    @Return: A message queue identifier
+ */
+int allocateQueue() {
+    int id = 'u';
+    return msgget(ftok(".", id), 0);
 }
