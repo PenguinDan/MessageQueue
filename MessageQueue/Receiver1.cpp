@@ -46,23 +46,23 @@ void receiveMessage(int, buffer, int, long, int);
  * The main starting point of the application
  */
 int main() {
-    
+
     //The Queue ID of the message queue
     int messageQueueId = allocateQueue();
-    
+
     //Build buffer for message acknowledgement to sender 997
     buffer ackMessage;
     ackMessage.mType = 2;
     ackMessage.senderId = 997;
     strcpy(ackMessage.message, "Acknowledgement from Receiver 1");
-    
+
     buffer rMessage;
     int messageSize = retrieveMessageSize(rMessage);
-    
+
     //Variable that keeps track of total received messages
     int receivedMessagesCount = 0;
-    
-    while(receivedMessagesCount < 5000) {
+
+    // while(receivedMessagesCount < 5000) {
         receiveMessage(
                        messageQueueId,
                        rMessage,
@@ -70,16 +70,19 @@ int main() {
                        RECEIVABLE_MESSAGE_TYPE,
                        MESSAGE_FLAG
                        );
-        
+
         //Print out the received message
         cout << rMessage.message << endl;
         receivedMessagesCount += 1;
-        
+
         if(rMessage.senderId == ackMessage.senderId) {
+            cout << "Sending acknowledgement message to Sender 997" << endl;
             sendMessageAcknowledgement(messageQueueId, ackMessage, messageSize, MESSAGE_FLAG);
         }
-    }
-    
+    // }
+
+    cout << "Closing message queue" << endl;
+    msgctl(messageQueueId, IPC_RMID, NULL);
     exit(0);
 }
 
@@ -93,8 +96,7 @@ int main() {
  */
 int allocateQueue() {
     cout << "Allocating Message Queue" << endl;
-    int id = 'u';
-    return msgget(ftok(".", id), IPC_EXCL|IPC_CREAT|0777);
+    return msgget(ftok(".", 'u'), IPC_EXCL|IPC_CREAT|0777);
 }
 
 /*
