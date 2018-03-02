@@ -45,15 +45,15 @@ int main(){
     msg.mtype = 0;
     msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 1");
-    cout<< " Message Sent to Reciever 1" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    cout<< " Message Sent to Reciever 1" <<endl;
 
     /*
     msg.mtype = 1;
     msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 2");
-    cout<< " Message Sent to Reciever 2" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    cout<< " Message Sent to Reciever 2" <<endl;
     */
 
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
