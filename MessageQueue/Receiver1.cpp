@@ -33,7 +33,7 @@ const int MESSAGE_FLAG = 0;
 //Message buffer
 struct buffer {
     long mType;
-    long senderId;
+    // long senderId;
     char message[MESSAGE_SIZE];
 };
 //Forward declaring methods
@@ -49,11 +49,12 @@ int main() {
 
     //The Queue ID of the message queue
     int messageQueueId = allocateQueue();
+    cout << "Create Message Queue ID: " << messageQueueId << endl;
 
     //Build buffer for message acknowledgement to sender 997
     buffer ackMessage;
     ackMessage.mType = 2;
-    ackMessage.senderId = 997;
+    // ackMessage.senderId = 997;
     strcpy(ackMessage.message, "Acknowledgement from Receiver 1");
 
     buffer rMessage;
@@ -75,10 +76,10 @@ int main() {
         cout << rMessage.message << endl;
         receivedMessagesCount += 1;
 
-        if(rMessage.senderId == ackMessage.senderId) {
+        // if(rMessage.senderId == ackMessage.senderId) {
             cout << "Sending acknowledgement message to Sender 997" << endl;
             sendMessageAcknowledgement(messageQueueId, ackMessage, messageSize, MESSAGE_FLAG);
-        }
+        // }
     // }
 
     cout << "Closing message queue" << endl;
@@ -108,7 +109,7 @@ int allocateQueue() {
  * @Return: The size of the message to be received
  */
 int retrieveMessageSize(buffer message) {
-    return sizeof(message) - sizeof(long) - sizeof(long);
+    return sizeof(message) - sizeof(long);
 }
 
 /*
