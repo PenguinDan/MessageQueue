@@ -30,8 +30,6 @@ const int MAX_MESSAGES = 5000;
 const int RECEIVABLE_MESSAGE_TYPE = 0;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
-//Variable that keeps track of total received messages
-int receivedMessagesCount = 0;
 //Message buffer
 struct buffer {
 	long mtype;
@@ -41,6 +39,7 @@ struct buffer {
 //Forward declaring methods
 int allocateQueue();
 int retrieveMessageSize(buffer);
+
 void receiveMessage(int, buffer, int, long, int);
 
 /*
@@ -48,18 +47,38 @@ void receiveMessage(int, buffer, int, long, int);
 */
 int main() {
 
+	//The Queue ID of the message queue
 	int messageQueueId = allocateQueue();
 
-	buffer message;
+	//Build buffer for message acknowledgement to sender 997
+	buffer ackMessage;
+	sendMessage.mType = 2;
+	sendMessage.senderId = 997;
+	strcpy(ackMessage.message, "Acknowledgement from Receiver 1");
+
+	buffer rMessage;
 	int messageSize = retrieveMessageSize(message);
 
-	receiveMessage(
-		messageQueueId,
-		message,
-		messageSize,
-		RECEIVABLE_MESSAGE_TYPE,
-		MESSAGE_FLAG
-	);
+	//Variable that keeps track of total received messages
+	int receivedMessagesCount = 0;
+
+	while(receivedMessagesCount < 5000) {
+		receiveMessage(
+			messageQueueId,
+			message,
+			messageSize,
+			RECEIVABLE_MESSAGE_TYPE,
+			MESSAGE_FLAG
+		);
+
+		//Print out the received message
+		cout << rMessage.message << endl;
+		receivedMessagesCount += 1;
+
+		if(rMessage.senderId == ackMessage.senderId) {
+			sendMessageAcknowledgement(messageQueueId, ackMessage, messageSize, MESSAGE_FLAG);
+		}
+	}
 
 	exit(0);
 }
@@ -73,6 +92,7 @@ int main() {
 *	@Return: A message queue identifier
 */
 int allocateQueue() {
+	cout << "Allocating Message Queue" << endl;
 	int id = 'u';
 	return msgget(ftok(".", id), IPC_EXCL|IPC_CREAT|0777);
 }
@@ -104,4 +124,8 @@ int retrieveMessageSize(buffer message) {
 */
 void receiveMessage(int queueId, buffer message, int messageSize, long messageType, int messageFlag) {
 	msgrccv(queueId, (struct buffer *)&message, messageSize, messageType, messageFlag);
+}
+
+void sendMessageAcknowledgement(int queueId, buffer message, int messageSize, int messageFlag) {
+	msgsnd(queueId, (struct msgbuf *)&message, messageSize, messageFlag);
 }
