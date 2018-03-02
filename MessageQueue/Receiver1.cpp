@@ -81,6 +81,7 @@ int main() {
         }
     // }
 
+    cout << "Closing message queue" << endl;
     msgctl(messageQueueId, IPC_RMID, NULL);
     exit(0);
 }
