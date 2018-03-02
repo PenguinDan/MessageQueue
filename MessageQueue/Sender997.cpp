@@ -27,23 +27,32 @@ int main(){
 
     struct buf{
         long mtype;
+        //SENDER_ID;
         //Define message size
         char message[MESSAGE_SIZE];
     };buf msg;
     initializeSRand();
 
-    msg.mtype = 0; //add mtype
-    strcpy(msg.message, "Hello")
-    cout<< getpid() << ":sends greeting" <<endl;
+    msg.mtype = 0;
+    strcpy(msg.message, "Sender 997 to Reciver 1")
+    cout<< " Message Sent to Reciever 1" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 
-    msgrcv(qid, (struct msgbuf *)&msg, size, 314, 0);
-  	cout << getpid() << ": gets reply" << endl;
-  	cout << "reply: " << msg.greeting << endl;
-  	cout << getpid() << ": now exits" << endl;
+    msg.mtype = 1;
+    strcpy(msg.message, "Sender 997 to Reciver 2")
+    cout<< " Message Sent to Reciever 2" <<endl;
+    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 
-  	msg.mtype = 117;
-  	msgsnd (qid, (struct msgbuf *)&msg, size, 0);
+    msgrcv(qid, (struct msgbuf *)&msg, size, 2, 0);
+  	cout << "Response Recived 1" << endl;
+  	cout << "reply: " << msg.greeting << endl;
+  	cout << ": now exits" << endl;
+
+    msgrcv(qid, (struct msgbuf *)&msg, size, 2, 0);
+  	cout << "Response Recived 2" << endl;
+  	cout << "reply: " << msg.greeting << endl;
+  	cout << ": now exits" << endl;
+
 }
 
 //Generate a random number
