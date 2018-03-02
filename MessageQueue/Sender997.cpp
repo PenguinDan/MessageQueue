@@ -23,22 +23,24 @@ void initializeSRand();
 
 int main(){
 
-    int qid = msgget(ftok(".",'u'), SENDER_ID);
+    int qid = msgget(ftok(".",'u'), 0);
 
     struct buf{
         long mtype;
-        //SENDER_ID;
+        long senderID;
         //Define message size
         char message[MESSAGE_SIZE];
     };buf msg;
     initializeSRand();
 
     msg.mtype = 0;
+    msg.SENDER_ID = senderID;
     strcpy(msg.message, "Sender 997 to Reciver 1")
     cout<< " Message Sent to Reciever 1" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 
     msg.mtype = 1;
+    msg.SENDER_ID = senderID;
     strcpy(msg.message, "Sender 997 to Reciver 2")
     cout<< " Message Sent to Reciever 2" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, size, 0);
