@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <time.h>
+#include <climits>
 using namespace std;
 
 const int SENDER_ID = 997;
@@ -34,25 +35,25 @@ int main(){
     initializeSRand();
 
     msg.mtype = 0;
-    msg.SENDER_ID = senderID;
-    strcpy(msg.message, "Sender 997 to Reciver 1")
+    msg.senderID = SENDER_ID;
+    strcpy(msg.message, "Sender 997 to Reciver 1");
     cout<< " Message Sent to Reciever 1" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+    msgsnd(qid, (struct msgbuf *)&msg, MESSAGE_SIZE, 0);
 
     msg.mtype = 1;
-    msg.SENDER_ID = senderID;
-    strcpy(msg.message, "Sender 997 to Reciver 2")
+    msg.senderID = SENDER_ID;
+    strcpy(msg.message, "Sender 997 to Reciver 2");
     cout<< " Message Sent to Reciever 2" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+    msgsnd(qid, (struct msgbuf *)&msg, MESSAGE_SIZE, 0);
 
-    msgrcv(qid, (struct msgbuf *)&msg, size, 2, 0);
+    msgrcv(qid, (struct msgbuf *)&msg, MESSAGE_SIZE, 2, 0);
   	cout << "Response Recived 1" << endl;
-  	cout << "reply: " << msg.greeting << endl;
+  	cout << "reply: " << msg.message << endl;
   	cout << ": now exits" << endl;
 
-    msgrcv(qid, (struct msgbuf *)&msg, size, 2, 0);
+    msgrcv(qid, (struct msgbuf *)&msg, MESSAGE_SIZE, 2, 0);
   	cout << "Response Recived 2" << endl;
-  	cout << "reply: " << msg.greeting << endl;
+  	cout << "reply: " << msg.message << endl;
   	cout << ": now exits" << endl;
 
 }
