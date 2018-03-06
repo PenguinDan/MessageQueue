@@ -26,28 +26,28 @@ int generateRandomNum();
 void initializeSRand();
 int allocateQueue();
 
-//Create a struct for message buffer
-struct buf{
-    //Define the mtype
-    long mtype;
-    //Define the sender id number
-    long senderID;
-    //Define message size
-    char message[MESSAGE_SIZE];
-    
-};
+
 
 int main(){
-    int qid = allocateQueue();
+    int qid = msgget(ftok(".",'u'), 0);
+    //Create a struct for message buffer
+    struct buf{
+        //Define the mtype
+        long mtype;
+        //Define the sender id number
+        long senderID;
+        //Define message size
+        char message[MESSAGE_SIZE];
+        
+    };buf msg;
     int size = sizeof(msg) - sizeof(long) - sizeof(long);
-    initializeSRand();
-    buf msg;
+    msg.mtype = 1;
     msg.senderID = 251;
-    msg.mtype = 0;
-    
     strcpy(msg.message, "This is sender 251.");
+    cout << "Sender 251: Sent message" << endl;
     msgsnd(qid, (struct msgbuf *)&msg, size, 0);
     
+    exit(0);
 }
 
 /*
