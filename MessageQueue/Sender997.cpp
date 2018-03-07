@@ -19,37 +19,36 @@ using namespace std;
 const int SENDER_ID = 997;
 const int MESSAGE_SIZE = 50;
 
-int generateRandomNum();
-void initializeSRand();
-
 struct message{
     long mtype;
     long senderID;
     char message[MESSAGE_SIZE];
     };
+int generateRandomNum();
+void initializeSRand();
+int retrieveMessageSize(message);
 
 int main(){
 
     int qid = msgget(ftok(".",'u'), 0);
 
-    message msg1;
-    message msg2;
+    message msg;
 
     initializeSRand();
 
     int messageSize = retrieveMessageSize(msg);
-    msg1.mtype = 1;
-    msg1.senderID = SENDER_ID;
-    strcpy(msg1.message, "Sender 997 to Reciver 1");
+    msg.mtype = 1;
+    msg.senderID = SENDER_ID;
+    strcpy(msg.message, "Sender 997 to Reciver 1");
     cout<< " Message Sent to Reciever 1" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg1, messageSize, 0);
+    msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
 
 
-    msg2.mtype = 3;
-    msg2.senderID = SENDER_ID;
-    strcpy(msg2.message, "Sender 997 to Reciver 2");
+    msg.mtype = 3;
+    msg.senderID = SENDER_ID;
+    strcpy(msg.message, "Sender 997 to Reciver 2");
     cout<< " Message Sent to Reciever 2" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg2, messageSize, 0);
+    msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
 
 
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
@@ -65,10 +64,10 @@ int main(){
     */
 
 }
-int retrieveMessageSize(buffer message) {
-    return sizeof(message) - sizeof(long) - sizeof(long);
-}
 
+int retrieveMessageSize(message msg) {
+    return sizeof(msg) - sizeof(long) - sizeof(long);
+}
 /*
  Generate a random number
  @Param: None
