@@ -131,7 +131,7 @@ int retrieveMessageSize(buffer message) {
  *
  */
 void receiveMessage(int queueId, buffer message, int messageSize, long messageType, int messageFlag) {
-    msgrcv(queueId, (struct buffer *)&message, messageSize, messageType, messageFlag);
+    msgrcv(queueId, (struct msgbuf *)&message, messageSize, messageType, messageFlag);
 }
 
 void sendMessageAcknowledgement(int queueId, buffer message, int messageSize, int messageFlag) {
