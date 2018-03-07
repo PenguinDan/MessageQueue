@@ -55,50 +55,40 @@ int main() {
     //Build buffer for message acknowledgement to sender 997
     //Sender 997 only receives messages of messageType 2
     buffer acknowledgementMessage;
-    acknowledgementMessage.messageType = 2;
-    acknowledgementMessage.senderId = 1;
+    acknowledgementMessage.messageType = 3;
+    acknowledgementMessage.senderId = ACCEPT_FROM_2;
     strcpy(acknowledgementMessage.message, "Acknowledgement from Receiver 1");
     //Create a buffer object to store the received messages
     buffer receivedMessage;
     int messageSize = retrieveMessageSize(receivedMessage);
+    cout << "Set message size set to : " << messageSize << endl;
 
-    //Variable that keeps track of total received messages, once it reaches
-    //4999, it will force the loop to exit and terminate the message queue
-    int receivedMessagesCount = 0;
+    while(true) {
+      cout << "Receiver 1 now waiting for message:" << endl;
+      //Waits until a message with the proper message type specified by
+      //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
+      //in the message queue
+      receiveMessage(
+                     messageQueueId,
+                     receivedMessage,
+                     messageSize,
+                     RECEIVABLE_MESSAGE_TYPE,
+                     MESSAGE_FLAG
+                     );
+      //The message has been received, specify which sender the message
+      //was received from and the message
+      cout << "Message from Sender #" << receivedMessage.senderId <<
+        ": " << receivedMessage.message << endl;
 
-    cout << "Entering while loop" << endl;
-
-    while(receivedMessagesCount < 5000) {
-        //Waits until a message with the proper message type specified by
-        //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
-        //in the message queue
-        receiveMessage(
-                       messageQueueId,
-                       receivedMessage,
-                       messageSize,
-                       RECEIVABLE_MESSAGE_TYPE,
-                       MESSAGE_FLAG
-                       );
-        //The message has been received, specify which sender the message
-        //was received from and the message
-        cout << "Message from Sender #" << receivedMessage.senderId <<
-          ": " << receivedMessage.message << endl;
-        //Increment the message received counter by one
-        receivedMessagesCount += 1;
-        //Check if the message was sent from Sender #997
-        if(receivedMessage.senderId == acknowledgementMessage.senderId) {
-            //The message was received from Sender #997
-            cout << "Sending acknowledgement message to Sender 997" << endl;
-            //Send the acknowledgement message to Sender 997
-            sendMessageAcknowledgement(messageQueueId, acknowledgementMessage,
-              messageSize, MESSAGE_FLAG);
-        }
-    }
-    //This receiver has received 5000 messages, begin closing the queue
-    cout << "Closing message queue" << endl;
-    msgctl(messageQueueId, IPC_RMID, NULL);
-    //Exit the program
-    exit(0);
+      //Check if the message was sent from Sender #997
+      if(receivedMessage.senderId == ACCEPT_FROM_2) {
+          //The message was received from Sender #997
+          cout << "Sending acknowledgement message to Sender 997" << endl;
+          //Send the acknowledgement message to Sender 997
+          sendMessageAcknowledgement(messageQueueId, acknowledgementMessage,
+            messageSize, MESSAGE_FLAG);
+      }
+  }
 }
 
 /*
