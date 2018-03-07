@@ -16,7 +16,7 @@
 #include <climits>
 using namespace std;
 
-const int SENDER_ID = 997;
+const long SENDER_ID = 997;
 const int MESSAGE_SIZE = 50;
 
 struct message{
@@ -43,7 +43,7 @@ int main(){
     msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 1");
     //sends message
-    msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    msgsnd(qid, (struct message *)&msg, messageSize, 0);
     //prints confirmation message
     cout<< " Message Sent to Reciever 1" <<endl;
 

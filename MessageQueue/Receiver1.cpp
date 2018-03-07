@@ -56,7 +56,7 @@ int main() {
     //Sender 997 only receives messages of messageType 2
     buffer acknowledgementMessage;
     acknowledgementMessage.messageType = 2;
-    acknowledgementMessage.senderId = 1;
+    acknowledgementMessage.senderId = 997;
     strcpy(acknowledgementMessage.message, "Acknowledgement from Receiver 1");
     //Create a buffer object to store the received messages
     buffer receivedMessage;
