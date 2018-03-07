@@ -36,23 +36,28 @@ int main(){
 
     initializeSRand();
 
+    //sets the message sizeof
     int messageSize = retrieveMessageSize(msg);
+    //sets mtype of the first message to 1
     msg.mtype = 1;
     msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 1");
-    cout<< " Message Sent to Reciever 1" <<endl;
+    //sends message
     msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    //prints confirmation message
+    cout<< " Message Sent to Reciever 1" <<endl;
 
-
+    /*
     msg.mtype = 3;
     msg.senderID = SENDER_ID;
     strcpy(msg.message, "Sender 997 to Reciver 2");
     cout<< " Message Sent to Reciever 2" <<endl;
     msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    */
 
-
+    //recieves message of mtype 2
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
-  	cout << "Response Recived 1" << endl;
+  	cout << "Response Recicved 1" << endl;
   	cout << "reply: " << msg.message << endl;
   	cout << ": now exits" << endl;
 
