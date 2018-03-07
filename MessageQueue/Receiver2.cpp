@@ -20,14 +20,14 @@
 using namespace std;
 
 //Constants that define the Senders in which this Receiver listens to
-const int ACCEPT_FROM_1 = 251;
+const int ACCEPT_FROM_1 = 257;
 const int ACCEPT_FROM_2 = 997;
 //Defines the size of the character array to be received
 const int MESSAGE_SIZE = 50;
 //Defines the maximum amount of messages that this Receiver could receive
 const int MAX_MESSAGES = 5000;
 //Defines the message type in which this message could receive
-const int RECEIVABLE_MESSAGE_TYPE = 1;
+const int RECEIVABLE_MESSAGE_TYPE = 2;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
 //Message buffer
@@ -37,7 +37,7 @@ struct buffer {
     char message[MESSAGE_SIZE];
 };
 //Forward declaring methods
-int allocateQueue();
+int connectToMessageQueue();
 int retrieveMessageSize(buffer);
 void sendMessageAcknowledgement(int , buffer , int , int);
 void receiveMessage(int, buffer, int, long, int);
@@ -46,20 +46,19 @@ void receiveMessage(int, buffer, int, long, int);
  * The main starting point of the application
  */
 int main() {
-
-    //The Message Queue ID that other programs connect to
-    int messageQueueId = allocateQueue();
-    //Message that prints out the message queue ID for easy deallocation
-    //from the terminal
-    cout << "Create Message Queue ID: " << messageQueueId << endl;
+    //Connect to message queue with provided information
+    int messageQueueId = connectToMessageQueue();
+    //Message that specifies the message queue that it connected to
+    cout << "Connected Message Queue ID: " << messageQueueId << endl;
     //Build buffer for message acknowledgement to sender 997
     //Sender 997 only receives messages of messageType 2
     buffer acknowledgementMessage;
-    acknowledgementMessage.messageType = 2;
-    acknowledgementMessage.senderId = 1;
-    strcpy(acknowledgementMessage.message, "Acknowledgement from Receiver 1");
+    acknowledgementMessage.messageType = 3;
+    acknowledgementMessage.senderId = ACCEPT_FROM_2;
+    strcpy(acknowledgementMessage.message, "Acknowledgement from Receiver 2");
     //Create a buffer object to store the received messages
     buffer receivedMessage;
+
     int messageSize = retrieveMessageSize(receivedMessage);
 
     //Variable that keeps track of total received messages, once it reaches
@@ -95,23 +94,10 @@ int main() {
         }
     }
     //This receiver has received 5000 messages, begin closing the queue
-    cout << "Closing message queue" << endl;
+    cout << "5000 reached, Closing message queue" << endl;
     msgctl(messageQueueId, IPC_RMID, NULL);
     //Exit the program
     exit(0);
-}
-
-/*
- * Wrapper method that allocates and creates a queue where message objects are
- * saved
- *
- * @Param: None
- *
- *    @Return: A message queue identifier
- */
-int allocateQueue() {
-    cout << "Allocating Message Queue" << endl;
-    return msgget(ftok(".", 'u'), IPC_EXCL|IPC_CREAT|0777);
 }
 
 /*
@@ -146,4 +132,8 @@ void receiveMessage(int queueId, buffer message, int messageSize, long messageTy
 
 void sendMessageAcknowledgement(int queueId, buffer message, int messageSize, int messageFlag) {
     msgsnd(queueId, (struct msgbuf *)&message, messageSize, messageFlag);
+}
+
+int connectToMessageQueue() {
+    return msgget(ftok(".",'u'), 0);
 }
