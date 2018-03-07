@@ -22,32 +22,35 @@ const int MESSAGE_SIZE = 50;
 int generateRandomNum();
 void initializeSRand();
 
+struct message{
+    long mtype;
+    long senderID;
+    char message[MESSAGE_SIZE];
+    };
+
 int main(){
 
     int qid = msgget(ftok(".",'u'), 0);
 
-    struct buf{
-        long mtype;
-        long senderID;
-        //Define message size
-        char message[MESSAGE_SIZE];
-    };buf msg;
+    message msg1;
+    message msg2;
+
     initializeSRand();
 
     int messageSize = retrieveMessageSize(msg);
-    msg.mtype = 0;
-    msg.senderID = SENDER_ID;
-    strcpy(msg.message, "Sender 997 to Reciver 1");
+    msg1.mtype = 1;
+    msg1.senderID = SENDER_ID;
+    strcpy(msg1.message, "Sender 997 to Reciver 1");
     cout<< " Message Sent to Reciever 1" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
+    msgsnd(qid, (struct msgbuf *)&msg1, messageSize, 0);
 
-    /*
-    msg.mtype = 1;
-    msg.senderID = SENDER_ID;
-    strcpy(msg.message, "Sender 997 to Reciver 2");
+
+    msg2.mtype = 3;
+    msg2.senderID = SENDER_ID;
+    strcpy(msg2.message, "Sender 997 to Reciver 2");
     cout<< " Message Sent to Reciever 2" <<endl;
-    msgsnd(qid, (struct msgbuf *)&msg, messageSize, 0);
-    */
+    msgsnd(qid, (struct msgbuf *)&msg2, messageSize, 0);
+
 
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
   	cout << "Response Recived 1" << endl;
@@ -65,12 +68,21 @@ int main(){
 int retrieveMessageSize(buffer message) {
     return sizeof(message) - sizeof(long) - sizeof(long);
 }
-//Generate a random number
+
+/*
+ Generate a random number
+ @Param: None
+ @Return: An integer value from 0 to 2,147,483,647
+ */
 int generateRandomNum(){
     return rand() % INT_MAX;
 }
 
-//Inititalize srand to the internal with the internal clokc of the computer
+/*
+ Inititalize srand to the internal with the internal clock of the computer
+ @Param: None
+ @Return: None
+ */
 void initializeSRand(){
     srand((int) time(NULL));
 }
