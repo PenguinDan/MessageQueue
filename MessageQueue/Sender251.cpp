@@ -15,13 +15,17 @@
 #include <sys/wait.h>
 #include <cstdlib>
 #include <stdlib.h>
-#include <climits>
 
 using namespace std;
 //Message sender ID
 const int SENDER_ID = 251;
 const int MESSAGE_SIZE = 50;
 const int SENT_TO = 1;
+
+//The number of the sender
+const int SENDER_ID_NUM = 251;
+//The number of the message type
+const int SENT_MESSAGE_TYPE = 1;
 
 int generateRandomNum();
 void initializeSRand();
@@ -39,15 +43,15 @@ int main(){
         long senderID;
         //Define message size
         char message[MESSAGE_SIZE];
-
+        
     };buf msg;
     int size = sizeof(msg) - sizeof(long) - sizeof(long);
-    msg.mtype = 1;
-    msg.senderID = 251;
     strcpy(msg.message, "This is sender 251.");
     cout << "Sender 251: Sent message" << endl;
+    msg.mtype = 1;
+    msg.senderID = 251;
     msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-
+    
     exit(0);
 }
 
