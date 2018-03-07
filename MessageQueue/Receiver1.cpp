@@ -101,7 +101,7 @@ int main() {
  */
 int allocateQueue() {
     cout << "Allocating Message Queue" << endl;
-    return msgget(ftok(".", 'u'), IPC_EXCL|IPC_CREAT|0777);
+    return msgget(ftok(".", 'u'), IPC_EXCL|IPC_CREAT|0600);
 }
 
 /*
