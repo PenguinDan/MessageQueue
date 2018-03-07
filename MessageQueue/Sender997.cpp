@@ -30,8 +30,8 @@ int retrieveMessageSize(message);
 
 int main(){
 
-    int qid = msgget(ftok(".",'u'), 0);
-
+    int messageQueueId = msgget(ftok(".",'u'), 0);
+    cout << "Connect to message queue id: " << messageQueueId << endl;
     message msg;
 
     initializeSRand();
@@ -41,9 +41,9 @@ int main(){
     //sets mtype of the first message to 1
     msg.mtype = 1;
     msg.senderID = SENDER_ID;
-    strcpy(msg.message, "Sender 997 to Reciver 1");
+    strcpy(msg.message, "Sender 997 to Receiver 1");
     //sends message
-    msgsnd(qid, (struct message *)&msg, messageSize, 0);
+    msgsnd(messageQueueId, (struct message *)&msg, messageSize, 0);
     //prints confirmation message
     cout<< " Message Sent to Reciever 1" <<endl;
 
@@ -56,10 +56,10 @@ int main(){
     */
 
     //recieves message of mtype 2
-    msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
-  	cout << "Response Recicved 1" << endl;
-  	cout << "reply: " << msg.message << endl;
-  	cout << ": now exits" << endl;
+    msgrcv(messageQueueId, (struct msgbuf *)&msg, messageSize, 2, 0);
+  	cout << "Response Received from Receiver #" << msg.senderID << ": " <<
+      msg.message << endl;
+  	cout << "exiting..." << endl;
 
     /*
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);

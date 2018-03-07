@@ -47,7 +47,7 @@ void receiveMessage(int, buffer, int, long, int);
  */
 int main() {
     //Connect to message queue with provided information
-    int messageQueueId = connectToMessageQueue();
+    int messageQueueId = msgget(ftok(".",'u'), 0);
     //Message that specifies the message queue that it connected to
     cout << "Connected Message Queue ID: " << messageQueueId << endl;
     //Build buffer for message acknowledgement to sender 997
@@ -71,13 +71,8 @@ int main() {
         //Waits until a message with the proper message type specified by
         //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
         //in the message queue
-        receiveMessage(
-                       messageQueueId,
-                       receivedMessage,
-                       messageSize,
-                       RECEIVABLE_MESSAGE_TYPE,
-                       MESSAGE_FLAG
-                       );
+        msgrcv(messageQueueId, (struct buffer *)&receivedMessage, messageSize,
+        RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
         //The message has been received, specify which sender the message
         //was received from and the message
         cout << "Message from Sender #" << receivedMessage.senderId <<
@@ -89,8 +84,8 @@ int main() {
             //The message was received from Sender #997
             cout << "Sending acknowledgement message to Sender 997" << endl;
             //Send the acknowledgement message to Sender 997
-            sendMessageAcknowledgement(messageQueueId, acknowledgementMessage,
-              messageSize, MESSAGE_FLAG);
+            msgsnd(messageQueueId,(struct msgbuf *)&acknowledgementMessage,
+             messageSize, MESSAGE_FLAG);
         }
     }
     //This receiver has received 5000 messages, begin closing the queue
@@ -111,29 +106,4 @@ int main() {
  */
 int retrieveMessageSize(buffer message) {
     return sizeof(message) - sizeof(long) - sizeof(long);
-}
-
-/*
- * Receives a message specifically through the given arguments
- *
- *@Param:
- *  int queueId: The message queue id
- *  buffer message: The message buffer object received
- *  int messageSize: The size of the message to be received
- *  long messageType: The message type specified by the received object
- *  int messageFlag: The flag that specifies the type of the message requested
- *
- *@Return: None
- *
- */
-void receiveMessage(int queueId, buffer message, int messageSize, long messageType, int messageFlag) {
-    msgrcv(queueId, (struct buffer *)&message, messageSize, messageType, messageFlag);
-}
-
-void sendMessageAcknowledgement(int queueId, buffer message, int messageSize, int messageFlag) {
-    msgsnd(queueId, (struct msgbuf *)&message, messageSize, messageFlag);
-}
-
-int connectToMessageQueue() {
-    return msgget(ftok(".",'u'), 0);
 }

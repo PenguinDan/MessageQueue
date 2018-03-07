@@ -34,7 +34,8 @@ int allocateQueue();
 
 
 int main(){
-    int qid = msgget(ftok(".",'u'), 0);
+    int messageQueueId = msgget(ftok(".",'u'), 0);
+    cout << "Connecting to Message Queue Id: " << messageQueueId << endl;
     //Create a struct for message buffer
     struct buf{
         //Define the mtype
@@ -43,15 +44,15 @@ int main(){
         long senderID;
         //Define message size
         char message[MESSAGE_SIZE];
-        
+
     };buf msg;
     int size = sizeof(msg) - sizeof(long) - sizeof(long);
     strcpy(msg.message, "This is sender 251.");
     cout << "Sender 251: Sent message" << endl;
     msg.mtype = 1;
     msg.senderID = 251;
-    msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-    
+    msgsnd(messageQueueId, (struct msgbuf *)&msg, size, 0);
+
     exit(0);
 }
 
@@ -71,16 +72,4 @@ int generateRandomNum(){
  */
 void initializeSRand(){
     srand((int) time(NULL));
-}
-
-/*
- *    Allocates a queue where message objects are saved
- *
- * @Param: None
- *
- *    @Return: A message queue identifier
- */
-int allocateQueue() {
-    int id = 'u';
-    return msgget(ftok(".", id), 0);
 }
