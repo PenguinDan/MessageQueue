@@ -82,7 +82,7 @@ int main() {
         //The message has been received, specify which sender the message
         //was received from and the message
         cout << "Message from Sender #" << receivedMessage.senderId <<
-          ": " << rMessage.message << endl;
+          ": " << receivedMessage.message << endl;
         //Increment the message received counter by one
         receivedMessagesCount += 1;
         //Check if the message was sent from Sender #997
