@@ -15,6 +15,7 @@
 #include <sys/wait.h>
 #include <cstdlib>
 #include <stdlib.h>
+#include <climits>
 
 using namespace std;
 //Message sender ID
