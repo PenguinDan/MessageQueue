@@ -18,6 +18,7 @@ using namespace std;
 
 const int SENDER_ID = 257;
 const int MESSAGE_SIZE = 50;
+const int MESSAGE_TYPE = 2;
 
 int generateRandomNum();
 void initializeSRand();

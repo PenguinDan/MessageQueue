@@ -18,6 +18,9 @@ using namespace std;
 
 const long SENDER_ID = 997;
 const int MESSAGE_SIZE = 50;
+const int RECEIVABLE_MESSAGE_TYPE = 3;
+const int MESSAGE_TYPE_FOR_RECEIVER_1 = 1;
+const int MESSAGE_TYPE_FOR_RECEIVER_2 = 2;
 
 struct message{
     long mtype;
@@ -30,22 +33,30 @@ int retrieveMessageSize(message);
 
 int main(){
 
-    int qid = msgget(ftok(".",'u'), 0);
-
-    message msg;
-
+    int messageQueueId = msgget(ftok(".",'u'), 0);
+    cout << "Connect to message queue id: " << messageQueueId << endl;
     initializeSRand();
 
-    //sets the message sizeof
-    int messageSize = retrieveMessageSize(msg);
-    //sets mtype of the first message to 1
+    //Initialize message for Receiver 1
+    message msg;
     msg.mtype = 1;
     msg.senderID = SENDER_ID;
-    strcpy(msg.message, "Sender 997 to Reciver 1");
+    strcpy(msg.message, "Sender 997 to Receiver 1");
+
+    //Initialize message for Receiver 2
+    message msg2;
+    msg2.mtype = 2;
+    msg.senderID = SENDER_ID;
+    strcpy(msg2.message, "Sender 997 to Receiver 2");
+
+    //Retrieve the size of the message
+    int messageSize = retrieveMessageSize(msg);
+    
     //sends message
-    msgsnd(qid, (struct message *)&msg, messageSize, 0);
+    msgsnd(messageQueueId, (struct message *)&msg, messageSize, 0);
+    msgsnd(messageQueueId, (struct message *)&msg2, messageSize, 0);
     //prints confirmation message
-    cout<< " Message Sent to Reciever 1" <<endl;
+    cout<< " Message Sent to Receiver 1 and 2" <<endl;
 
     /*
     msg.mtype = 3;
@@ -56,10 +67,10 @@ int main(){
     */
 
     //recieves message of mtype 2
-    msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
-  	cout << "Response Recicved 1" << endl;
-  	cout << "reply: " << msg.message << endl;
-  	cout << ": now exits" << endl;
+    msgrcv(messageQueueId, (struct msgbuf *)&msg, messageSize, RECEIVABLE_MESSAGE_TYPE, 0);
+  	cout << "Response Received from Receiver #" << msg.senderID << ": " <<
+      msg.message << endl;
+  	cout << "exiting..." << endl;
 
     /*
     msgrcv(qid, (struct msgbuf *)&msg, messageSize, 2, 0);
