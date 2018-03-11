@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <climits>
-#include <string>
 using namespace std;
 
 const long SENDER_ID = 997;

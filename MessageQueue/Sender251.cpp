@@ -57,7 +57,7 @@ int main(){
     int numGenerated;
 
     //Creates exit message sent to Receiver1 by patch
-    setExitMessage(messageQueueId);
+    //setExitMessage(messageQueueId);
 
     while(true){
         int size = sizeof(sentMessage) - sizeof(long) - sizeof(long);
