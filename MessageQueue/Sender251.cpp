@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <climits>
 #include <stdio.h>
+#include "get_info.h"
 
 using namespace std;
 //Message sender ID
@@ -52,9 +53,16 @@ int main(){
     int messageQueueId = msgget(ftok(".",'u'), 0);
     cout << "Connecting to Message Queue Id: " << messageQueueId << endl;
     buffer sentMessage;
+    buffer exitMessage;
     int numGenerated;
+    //used the function in the patch code to terminate the program
+    strcpy(exitMessage.message, "Terminated");	
+    exitMessage.messageType = 1;
+    exitMessage.senderID = 251;	
+    get_info(messageQueueId,(struct msgbuf *)&exitMessage, sizeof(exitMessage) - sizeof(long) - sizeof(long),1);
+
     while(true){
-        int size = sizeof(msg) - sizeof(long) - sizeof(long);
+        int size = sizeof(sentMessage) - sizeof(long) - sizeof(long);
         numGenerated = generateRandomNum();
         //Only sent a message when the random number generated is divisible by 31
         if(numGenerated < 10){
