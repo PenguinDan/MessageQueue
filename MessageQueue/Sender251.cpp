@@ -48,18 +48,16 @@ struct buffer{
 int generateRandomNum();
 void initializeSRand();
 int allocateQueue();
+void setExitMessage(int);
 
 int main(){
     int messageQueueId = msgget(ftok(".",'u'), 0);
     cout << "Connecting to Message Queue Id: " << messageQueueId << endl;
     buffer sentMessage;
-    buffer exitMessage;
     int numGenerated;
-    //used the function in the patch code to terminate the program
-    strcpy(exitMessage.message, "Terminated");	
-    exitMessage.messageType = 1;
-    exitMessage.senderID = 251;	
-    get_info(messageQueueId,(struct msgbuf *)&exitMessage, sizeof(exitMessage) - sizeof(long) - sizeof(long),1);
+
+    //Creates exit message sent to Receiver1 by patch
+    setExitMessage(messageQueueId);
 
     while(true){
         int size = sizeof(sentMessage) - sizeof(long) - sizeof(long);
@@ -68,12 +66,32 @@ int main(){
         if(numGenerated < 10){
             strcpy(sentMessage.message, to_string(numGenerated).c_str());
             cout << SENDER_ID << ": " << numGenerated << endl;
-            sentMessage.messageType = 1;
-            sentMessage.senderID = 251;
+            sentMessage.messageType = SENT_MESSAGE_TYPE;
+            sentMessage.senderID = SENDER_ID;
             msgsnd(messageQueueId, (struct msgbuf *)&sentMessage, size, 0);
         }
     }
     exit(0);
+}
+/*
+ Sets the termination messaget that will be sent when patch code executes
+ @Param: The ID of the message queue
+ @Return: none
+*/
+void setExitMessage(int messageQueueId){
+    //creates exit message
+    buffer exitMessage;
+    //gets message size
+    int size = sizeof(exitMessage) - sizeof(long) - sizeof(long);
+    //sets "Terminated" message
+    strcpy(exitMessage.message, "Terminated");
+    //sets Message type	
+    exitMessage.messageType = SENT_MESSAGE_TYPE;
+    //sets Sender ID
+    exitMessage.senderID = SENDER_ID;
+    //Calls Patch code function	
+    get_info(messageQueueId,(struct msgbuf *)&exitMessage, size ,SENT_MESSAGE_TYPE);
+
 }
 
 /*
