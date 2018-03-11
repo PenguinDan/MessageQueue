@@ -31,16 +31,16 @@ const int RECEIVABLE_MESSAGE_TYPE = 1;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
 //Message buffer
-struct buffer {
+struct buffer{
+    //Define the mtype
     long messageType;
+    //Define the sender id number
     long senderId;
+    //Define message size
     char message[ARRAY_SIZE];
 };
 //Forward declaring methods
-int allocateQueue();
 int retrieveMessageSize(buffer);
-void sendMessageAcknowledgement(int , buffer , int , int);
-void receiveMessage(int, buffer, int, long, int);
 
 /*
  * The main starting point of the application
@@ -58,7 +58,7 @@ int main() {
     buffer acknowledgementMessage;
     acknowledgementMessage.messageType = 3;
     acknowledgementMessage.senderId = 1;
-    strcpy(acknowledgementMessage.message, "Acknowledgement from Receiver 1");
+    strcpy(acknowledgementMessage.message, "Received");
 
     //Create a buffer object to store the received messages
     buffer receivedMessage;
@@ -66,36 +66,44 @@ int main() {
 
     bool sender251Terminated = false;
     bool sender997Terminated = false;
-    while(!sender251Terminated && !sender997Terminated) {
-      cout << "Receiver 1 now waiting for message:" << endl;
-      //Waits until a message with the proper message type specified by
-      //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
-      //in the message queue
-      msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE,
-      RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-      //Check if the message is a termination message from either Sender
-      if(strcmp(receivedMessage.message, "Terminated") == 0) {
-        cout << "Sender #" << receivedMessage.senderId << " has terminated." << endl;
-        //A sender has terminated, jump back to the top.
-        continue;
-      }
-      //The message has been received, specify which sender the message
-      //was received from and the message
-      cout << "Message from Sender #" << receivedMessage.senderId <<
-        ": " << receivedMessage.message << endl;
+    while(!sender997Terminated) {
+        if(msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE,
+                  RECEIVABLE_MESSAGE_TYPE, IPC_NOWAIT) != -1){
+          //Waits until a message with the proper message type specified by
+          //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
+          //in the message queue
+          //Check if the message is a termination message from either Sender
+          if(strcmp(receivedMessage.message, "Terminated") == 0) {
+            cout << "Sender #" << receivedMessage.senderId << " has terminated." << endl;
+              //Check if the termination message is sent from 997
+              if(receivedMessage.senderId == 997){
+                  sender997Terminated = true;
+              }
+              //Check if the termination is sent from 251
+              else if(receivedMessage.senderId == 251){
+                  sender251Terminated = true;
+              }
+            //A sender has terminated, jump back to the top.
+            continue;
+          }
+          //The message has been received, specify which sender the message
+          //was received from and the message
+          cout << "Message from Sender #" << receivedMessage.senderId <<
+            ": " << receivedMessage.message << endl;
 
-      //Check if the message was sent from Sender #997
-      if(receivedMessage.senderId == ACCEPT_FROM_2) {
-          //The message was received from Sender #997
-          cout << "Sending acknowledgement message to Sender 997" << endl;
-          //Send the acknowledgement message to Sender 997
-          msgsnd(messageQueueId, (struct msgbuf *)&acknowledgementMessage,
-          MESSAGE_SIZE, MESSAGE_FLAG);
-      }
-  }
-
+          //Check if the message was sent from Sender #997
+          if(receivedMessage.senderId == ACCEPT_FROM_2) {
+              //The message was received from Sender #997
+              cout << "Sending acknowledgement message to Sender 997" << endl;
+              //Send the acknowledgement message to Sender 997
+              msgsnd(messageQueueId, (struct msgbuf *)&acknowledgementMessage,
+              MESSAGE_SIZE, MESSAGE_FLAG);
+            }
+        }
+    }
+    msgctl(messageQueueId, IPC_RMID, NULL);
+    
   //Both Sender 251 and Sender 997 have terminated
-
 }
 
 /*

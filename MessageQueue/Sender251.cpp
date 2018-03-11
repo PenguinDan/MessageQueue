@@ -16,44 +16,55 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <climits>
+#include <stdio.h>
 
 using namespace std;
 //Message sender ID
 const int SENDER_ID = 251;
-const int MESSAGE_SIZE = 50;
+//Defines the size of the character array to be received
+const int ARRAY_SIZE = 50;
+//The receiver number
 const int SENT_TO = 1;
-
 //The number of the sender
 const int SENDER_ID_NUM = 251;
 //The number of the message type
 const int SENT_MESSAGE_TYPE = 1;
+//The maximum number that a random can generate to
+const int MAX_RANDOM_NUM = 200000000;
+//Defines the message flag stating that the first message on the queue is received
+const int MESSAGE_FLAG = 0;
+//Message buffer
+struct buffer{
+    //Define the mtype
+    long messageType;
+    //Define the sender id number
+    long senderID;
+    //Define message size
+    char message[ARRAY_SIZE];
+    
+};
 
 int generateRandomNum();
 void initializeSRand();
 int allocateQueue();
 
-
-
 int main(){
     int messageQueueId = msgget(ftok(".",'u'), 0);
     cout << "Connecting to Message Queue Id: " << messageQueueId << endl;
-    //Create a struct for message buffer
-    struct buf{
-        //Define the mtype
-        long mtype;
-        //Define the sender id number
-        long senderID;
-        //Define message size
-        char message[MESSAGE_SIZE];
-
-    };buf msg;
-    int size = sizeof(msg) - sizeof(long) - sizeof(long);
-    strcpy(msg.message, "This is sender 251.");
-    cout << "Sender 251: Sent message" << endl;
-    msg.mtype = 1;
-    msg.senderID = 251;
-    msgsnd(messageQueueId, (struct msgbuf *)&msg, size, 0);
-
+    buffer sentMessage;
+    int numGenerated;
+    while(true){
+        int size = sizeof(msg) - sizeof(long) - sizeof(long);
+        numGenerated = generateRandomNum();
+        //Only sent a message when the random number generated is divisible by 31
+        if(numGenerated < 10){
+            strcpy(sentMessage.message, to_string(numGenerated).c_str());
+            cout << SENDER_ID << ": " << numGenerated << endl;
+            sentMessage.messageType = 1;
+            sentMessage.senderID = 251;
+            msgsnd(messageQueueId, (struct msgbuf *)&sentMessage, size, 0);
+        }
+    }
     exit(0);
 }
 
@@ -63,7 +74,7 @@ int main(){
  @Return: An integer value from 0 to 2,147,483,647
  */
 int generateRandomNum(){
-    return rand() % INT_MAX;
+    return rand() % MAX_RANDOM_NUM;
 }
 
 /*
