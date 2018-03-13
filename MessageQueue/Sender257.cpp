@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <time.h>
+#include <climits>
 using namespace std;
 
 //Define the receiver id number
@@ -63,7 +64,7 @@ int main(){
     while(receiveNotifications){
         numGenerated = generateRandomNum();
         //Only sent a message to receiver 2 if a random number is less than 100
-        if(numGenerated < 600){
+        if(numGenerated < 60){
             strcpy(sendMessage.message, to_string(numGenerated).c_str());
             cout << "Sent to receiver #" << RECERIVER_ID << ": " << numGenerated << endl;
             sendMessage.messageType = MESSAGE_TYPE;
@@ -71,15 +72,14 @@ int main(){
             msgsnd(messageQueueId, (struct msgbuf *)&sendMessage, MESSAGE_SIZE, MESSAGE_FLAG);
         }
         //Check if there a terminate message from receiver 2
-        if(msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) != -1){
-            msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, 0);
+        if(msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) == 56){
             //Check to see if receiver 2 sent a terminated message
             if(strcmp(receivedMessage.message, "Terminated") == 0){
                 cout << "End program" << endl;
                 receiveNotifications = false;
             }
         }
-        
+
     }
     cout << "Disconnect connection..." << endl;
 }
@@ -106,4 +106,3 @@ int generateRandomNum(){
 void initializeSRand(){
     srand((int) time(NULL));
 }
-

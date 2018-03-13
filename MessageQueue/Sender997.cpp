@@ -46,7 +46,7 @@ int main(){
     const int MESSAGE_SIZE = retrieveMessageSize(sentMessage1);
     initializeSRand();
     int numGenerated = generateRandomNum();
-    while(numGenerated >= 100){
+    while(numGenerated >= 50){
         //Only sent a message if the random generated number less than 200
         if(numGenerated < 5000){
             //Initialize message for Receiver 1
@@ -60,27 +60,18 @@ int main(){
             sentMessage2.senderID = SENDER_ID;
             strcpy(sentMessage2.message, to_string(numGenerated).c_str());
             cout << "Sent to receiver " << 2 << ": " << numGenerated << endl;
-            
+
             //sends message
             msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
             msgsnd(messageQueueId, (struct message *)&sentMessage2, MESSAGE_SIZE, MESSAGE_FLAG);
             //Loop unitl both receiver 1 and 2 sent an acknowleagement message
-            while(!receiver1Acknowledge || !receiver2Acknowledge){
-                //Check if there a message in the queue with mtype 3
-                msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE,
-                           RECEIVABLE_MESSAGE_TYPE, IPC_NOWAIT);
-                cout << receivedMessage.message << endl;
-                if(strcmp(receivedMessage.message, "Received") == 0){
-                    if(receivedMessage.senderID == 1){
-                        cout << "From Receiver 1" << endl;
-                        receiver1Acknowledge = true;
-                    }
-                    else if(receivedMessage.senderID == 2){
-                        cout << "From Receiver 2" << endl;
-                        receiver2Acknowledge = true;
-                    }
-                }
-            }
+
+        	  msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+        		    cout << receivedMessage.message << endl;
+        	  msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+        		    cout << receivedMessage.message << endl;
+
+
             //Reset the acknowledgement back to false
             receiver1Acknowledge = false;
             receiver2Acknowledge = false;
@@ -93,7 +84,7 @@ int main(){
     sentMessage1.senderID = SENDER_ID;
     msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
     cout << "Connection disconected..." << endl;
-    
+
 }
 
 int retrieveMessageSize(buffer message) {
