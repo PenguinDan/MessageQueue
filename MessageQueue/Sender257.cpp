@@ -71,8 +71,8 @@ int main(){
             msgsnd(messageQueueId, (struct msgbuf *)&sendMessage, MESSAGE_SIZE, MESSAGE_FLAG);
         }
         //Check if there a terminate message from receiver 2
-        if(msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE,               RECEIVABLE_MESSAGE_TYPE, IPC_NOWAIT) != -1){
-            msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE,               RECEIVABLE_MESSAGE_TYPE, 0);
+        if(msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) != -1){
+            msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, 0);
             //Check to see if receiver 2 sent a terminated message
             if(strcmp(receivedMessage.message, "Terminated") == 0){
                 cout << "End program" << endl;

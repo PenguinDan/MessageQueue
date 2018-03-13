@@ -97,12 +97,11 @@ int main() {
     cout << receivedMessagesCount << endl;
     cout << "5000 reached, Closing message queue" << endl;
     //Send a stop notification message to sender 257
-//    strcpy(sentMessage.message, "Terminated");
-//    sentMessage.messageType = TERMINATE_MESSAGE_TYPE;
-//    sentMessage.senderId = SENDER_ID;
-//    msgsnd(messageQueueId, (struct msgbuf *)&sentMessage, MESSAGE_SIZE, MESSAGE_FLAG);
+    strcpy(sentMessage.message, "Terminated");
+    sentMessage.messageType = TERMINATE_MESSAGE_TYPE;
+    sentMessage.senderId = SENDER_ID;
+    msgsnd(messageQueueId, (struct msgbuf *)&sentMessage, MESSAGE_SIZE, MESSAGE_FLAG);
     //This receiver has received 5000 messages, begin closing the queue
-    msgctl(messageQueueId, IPC_RMID, NULL);
     //Exit the program
     exit(0);
 }

@@ -66,9 +66,9 @@ int main() {
 
     bool sender251Terminated = false;
     bool sender997Terminated = false;
-    while(!sender997Terminated /* || !sender251Terminated */) {
+    while(!sender997Terminated  || !sender251Terminated ) {
         if(msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE,
-                  RECEIVABLE_MESSAGE_TYPE, IPC_NOWAIT) != -1){
+                  RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) != -1){
           //Waits until a message with the proper message type specified by
           //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
           //in the message queue
