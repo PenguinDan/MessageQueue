@@ -68,23 +68,22 @@ int main(){
         numberOfMessagesSent++;
         //Loop unitl both receiver 1 and 2 sent an acknowleagement message
 
+        //waits to receive acknowledgement messages from Receiver1 and Receiver2
     	  msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-		    cout << "Acknowledgment received from : " << receivedMessage.messageType << endl;
-          msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-            cout << receivedMessage.message << endl;
+		    cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
+        msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+        cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
 
         numGenerated = generateRandomNum();
-        cout << numberOfMessagesSent << endl;
     }
 
-    cout << "Sending message to 257 with # of messages sent: " << numGenerated << endl;
+    cout << "Sending message to 257 with # of messages sent: " << numberOfMessagesSent << endl;
     terminationMessage.senderID = SENDER_ID;
     terminationMessage.messageType = 500;
     strcpy(terminationMessage.message, to_string(numberOfMessagesSent).c_str());
     //Send termination message to 257 along with variable of messages sent
     msgsnd(messageQueueId, (struct message *)&terminationMessage, MESSAGE_SIZE, MESSAGE_FLAG);
     //Send a terminate notification to receiver 1
-    cout << "Messages Generated : "<<numGenerated << endl;
     strcpy(sentMessage1.message, "Terminated");
     sentMessage1.senderID = SENDER_ID;
     msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
