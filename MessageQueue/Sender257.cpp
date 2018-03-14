@@ -28,6 +28,9 @@ const int MESSAGE_TYPE = 2;
 //Defines the termination message type in which this message could receive
 const int RECEIVABLE_MESSAGE_TYPE = 10;
 //Defines the message flag stating that the first message on the queue is received
+//Start process mtype
+const int START_MESSAGE_TYPE = 500;
+
 const int MESSAGE_FLAG = 0;
 //Define the max number that a randon can generate
 const int MAX_RANDOM_NUM = 5000000;
@@ -52,16 +55,23 @@ int main(){
     int messageQueueId = msgget(ftok(".", 'u'), 0);
     bool receiveNotifications = true;
     int numGenerated;
+    int numOfMessagesSent;
     initializeSRand();
     //Message that prints out the message queue ID for easy deallocation
     //from the terminal
-    cout << "Created Message Queue ID: " << messageQueueId << endl;
+    cout << "Connect to Message Queue ID: " << messageQueueId << endl;
     //Build buffer for sent message to receiver 2
     buffer sendMessage;
     buffer receivedMessage;
+    //Set MESSAGE_SIZE
     int MESSAGE_SIZE = retrieveMessageSize(sendMessage);
-    int x = 0;
-    while(receiveNotifications){
+    //Wait to receieve message from 997;
+    msgrcv(messageQueueId, &receivedMessage, MESSAGE_SIZE,
+           START_MESSAGE_TYPE, MESSAGE_FLAG);
+    //Get the number of messsage that Sender997 has send
+    numOfMessagesSent = stoi(receivedMessage.message);
+    //Loop until it sent 500 message
+    while(numOfMessagesSent < 5000){
         numGenerated = generateRandomNum();
         //Only sent a message to receiver 2 if a random number is less than 100
         if(numGenerated < 60){
@@ -70,16 +80,8 @@ int main(){
             sendMessage.messageType = MESSAGE_TYPE;
             sendMessage.senderID = SENDER_ID;
             msgsnd(messageQueueId, (struct msgbuf *)&sendMessage, MESSAGE_SIZE, MESSAGE_FLAG);
+            numOfMessagesSent++;
         }
-        //Check if there a terminate message from receiver 2
-        if(msgrcv(messageQueueId, (struct buffer *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) == 56){
-            //Check to see if receiver 2 sent a terminated message
-            if(strcmp(receivedMessage.message, "Terminated") == 0){
-                cout << "End program" << endl;
-                receiveNotifications = false;
-            }
-        }
-
     }
     cout << "Disconnect connection..." << endl;
 }

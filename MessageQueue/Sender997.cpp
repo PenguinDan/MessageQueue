@@ -23,6 +23,7 @@ const int MESSAGE_TYPE_FOR_RECEIVER_1 = 1;
 const int MESSAGE_TYPE_FOR_RECEIVER_2 = 2;
 const int M_TYPE_FOR_257 = 500;
 const int MESSAGE_FLAG = 0;
+const int MAX_VALUE = 10000;
 
 struct buffer{
     //Define the mtype
@@ -64,15 +65,16 @@ int main(){
         msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
         msgsnd(messageQueueId, (struct message *)&sentMessage2, MESSAGE_SIZE, MESSAGE_FLAG);
         //Increment the message sent to receiver 2
-        numberOfMessages++;
+        numberOfMessagesSent++;
         //Loop unitl both receiver 1 and 2 sent an acknowleagement message
 
     	  msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
 		    cout << "Acknowledgment received from : " << receivedMessage.messageType << endl;
-    	  msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-		    cout << receivedMessage.message << endl;
+          msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+            cout << receivedMessage.message << endl;
 
         numGenerated = generateRandomNum();
+        cout << numberOfMessagesSent << endl;
     }
 
     cout << "Sending message to 257 with # of messages sent: " << numGenerated << endl;
@@ -99,7 +101,7 @@ int retrieveMessageSize(buffer message) {
  @Return: An integer value from 0 to 2,147,483,647
  */
 int generateRandomNum(){
-    return rand() % INT_MAX;
+    return rand() % MAX_VALUE;
 }
 
 /*
