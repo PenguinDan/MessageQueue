@@ -32,9 +32,6 @@ const int RECEIVABLE_MESSAGE_TYPE = 1;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
 
-//Forward declaring methods
-int retrieveMessageSize(buffer);
-
 //Message buffer
 struct buffer{
     //Define the mtype
@@ -44,6 +41,9 @@ struct buffer{
     //Define message size
     char message[ARRAY_SIZE];
 };
+
+//Forward declaring methods
+int retrieveMessageSize(buffer);
 
 /*
  * The main starting point of the application
@@ -106,7 +106,7 @@ int main() {
     }
     msgctl(messageQueueId, IPC_RMID, NULL);
     exit(0);
-    
+
   //Both Sender 251 and Sender 997 have terminated
 }
 

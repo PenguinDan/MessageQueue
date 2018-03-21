@@ -32,11 +32,6 @@ const int MESSAGE_FLAG = 0;
 //Define the max number that a random number generator can generate
 const int MAX_VALUE = 10000;
 
-//Forward declaring methods
-int generateRandomNum();
-void initializeSRand();
-int retrieveMessageSize(buffer);
-
 //Message buffer
 struct buffer{
     //Define the mtype
@@ -46,6 +41,11 @@ struct buffer{
     //Define messge size
     char message[ARRAY_SIZE];
 };
+
+//Forward declaring methods
+int generateRandomNum();
+void initializeSRand();
+int retrieveMessageSize(buffer);
 
 int main(){
     //Get the message queue id
@@ -91,13 +91,13 @@ int main(){
 
         numGenerated = generateRandomNum();
     }
-    
+
     //Send termination message to 257 along with variable of messages sent
     terminationMessage.senderID = SENDER_ID;
     terminationMessage.messageType = 500;
     strcpy(terminationMessage.message, to_string(numberOfMessagesSent).c_str());
     msgsnd(messageQueueId, (struct message *)&terminationMessage, MESSAGE_SIZE, MESSAGE_FLAG);
-    
+
     //Send a terminate notification to receiver 1
     strcpy(sentMessage1.message, "Terminated");
     sentMessage1.senderID = SENDER_ID;

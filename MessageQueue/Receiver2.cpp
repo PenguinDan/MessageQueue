@@ -36,9 +36,6 @@ const int TERMINATE_MESSAGE_TYPE = 10;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
 
-//Forward declaring methods
-int retrieveMessageSize(buffer);
-
 //Message buffer
 struct buffer {
     //Define the mtype
@@ -48,6 +45,9 @@ struct buffer {
     //Define message size
     char message[ARRAY_SIZE];
 };
+
+//Forward declaring methods
+int retrieveMessageSize(buffer);
 
 /*
  * The main starting point of the application
@@ -60,7 +60,7 @@ int main() {
     //Build buffer for message acknowledgement to sender 997
     //Sender 997 only receives messages of messageType 2
     buffer acknowledgementMessage;
-    
+
     //Create a buffer object to store the received messages
     buffer receivedMessage;
     //Creata a buffer object to store sent message
@@ -71,7 +71,7 @@ int main() {
     //Variable that keeps track of total received messages, once it reaches
     //4999, it will force the loop to exit and terminate the message queue
     int receivedMessagesCount = 0;
-    
+
     //This loop goign to run until receiver 2 has received 5000 messages
     while(receivedMessagesCount < 5000) {
         //Waits until a message with the proper message type specified by

@@ -35,11 +35,6 @@ const int MESSAGE_FLAG = 0;
 //Define the max number that a random number generator can generate
 const int MAX_RANDOM_NUM = 5000000;
 
-//Forward declaring methods
-int generateRandomNum();
-void initializeSRand();
-int retrieveMessageSize(buffer);
-
 //Message buffer
 struct buffer{
     //Define the mtype
@@ -49,6 +44,11 @@ struct buffer{
     //Define message size
     char message[ARRAY_SIZE];
 };
+
+//Forward declaring methods
+int generateRandomNum();
+void initializeSRand();
+int retrieveMessageSize(buffer);
 
 /*
  * The main starting point of the application
