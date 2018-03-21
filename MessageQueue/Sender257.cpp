@@ -66,6 +66,8 @@ int main(){
     cout << "Connected Message Queue ID: " << messageQueueId << endl;
     //Build buffer for sent message to receiver 2
     buffer sendMessage;
+    //Build buffer for received message from 997
+    buffer receivedMessage;
     //Set MESSAGE_SIZE
     int MESSAGE_SIZE = retrieveMessageSize(sendMessage);
     //Wait to receieve message from 997;
