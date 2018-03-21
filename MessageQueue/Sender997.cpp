@@ -61,33 +61,32 @@ int main(){
     int numGenerated = generateRandomNum();
     //Counts the number of messages sent
     int numberOfMessagesSent = 0;
+    //Only sent a message if the random generated number is greater than 100
     while(numGenerated >= 100){
-        //Only sent a message if the random generated number less than 200
-        if(numGenerated < 200){
-            //Initialize message for Receiver 1
-            sentMessage1.messageType = 1;
-            sentMessage1.senderID = SENDER_ID;
-            strcpy(sentMessage1.message, to_string(numGenerated).c_str());
-            cout << "Sent to receiver " << 1 << ": " << numGenerated << endl;
 
-            //Initialize message for Receiver 2
-            sentMessage2.messageType = 2;
-            sentMessage2.senderID = SENDER_ID;
-            strcpy(sentMessage2.message, to_string(numGenerated).c_str());
-            cout << "Sent to receiver " << 2 << ": " << numGenerated << endl;
-            //Sends message to receiver 1
-            msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
-            //Sends message to receiver 1
-            msgsnd(messageQueueId, (struct message *)&sentMessage2, MESSAGE_SIZE, MESSAGE_FLAG);
-            //Increment the message sent to receiver 2
-            numberOfMessagesSent++;
+        //Initialize message for Receiver 1
+        sentMessage1.messageType = 1;
+        sentMessage1.senderID = SENDER_ID;
+        strcpy(sentMessage1.message, to_string(numGenerated).c_str());
+        cout << "Sent to receiver " << 1 << ": " << numGenerated << endl;
 
-            //waits to receive acknowledgement messages from Receiver1 and Receiver2
-            msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-            cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
-            msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
-            cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
-        }
+        //Initialize message for Receiver 2
+        sentMessage2.messageType = 2;
+        sentMessage2.senderID = SENDER_ID;
+        strcpy(sentMessage2.message, to_string(numGenerated).c_str());
+        cout << "Sent to receiver " << 2 << ": " << numGenerated << endl;
+        //Sends message to receiver 1
+        msgsnd(messageQueueId, (struct message *)&sentMessage1, MESSAGE_SIZE, MESSAGE_FLAG);
+        //Sends message to receiver 1
+        msgsnd(messageQueueId, (struct message *)&sentMessage2, MESSAGE_SIZE, MESSAGE_FLAG);
+        //Increment the message sent to receiver 2
+        numberOfMessagesSent++;
+
+        //waits to receive acknowledgement messages from Receiver1 and Receiver2
+        msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+        cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
+        msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE, RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG);
+        cout << "Acknowledgment received from : " << receivedMessage.senderID << endl;
 
         numGenerated = generateRandomNum();
     }
