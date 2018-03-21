@@ -1,10 +1,11 @@
 /*
- * Each receiver repeatedly gets a message and displays the value and the Sender’s identity
- * Receiver #1
- *    Accepts from who:
- *       Only accepts messages from 251 AND 997 SENDERS
- *    Termination cause:
- *       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
+ - File Name: Receiver2
+ - Each receiver repeatedly gets a message and displays the value and the Sender’s identity
+ - Receiver #1
+ -    Accepts from who:
+ -       Only accepts messages from 251 AND 997 SENDERS
+ -    Termination cause:
+ -       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
  */
 
 //All of the necessary libraries for the program to run
@@ -34,6 +35,10 @@ const int RECEIVABLE_MESSAGE_TYPE = 2;
 const int TERMINATE_MESSAGE_TYPE = 10;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
+
+//Forward declaring methods
+int retrieveMessageSize(buffer);
+
 //Message buffer
 struct buffer {
     //Define the mtype
@@ -43,8 +48,6 @@ struct buffer {
     //Define message size
     char message[ARRAY_SIZE];
 };
-//Forward declaring methods
-int retrieveMessageSize(buffer);
 
 /*
  * The main starting point of the application
@@ -52,7 +55,6 @@ int retrieveMessageSize(buffer);
 int main() {
     //Connect to message queue with provided information
     int messageQueueId = msgget(ftok(".",'u'), 0);
-    //int messageQueueId = msgget(ftok(".", 'u'), IPC_EXCL|IPC_CREAT|0600);
     //Message that specifies the message queue that it connected to
     cout << "Connected Message Queue ID: " << messageQueueId << endl;
     //Build buffer for message acknowledgement to sender 997
@@ -70,6 +72,7 @@ int main() {
     //4999, it will force the loop to exit and terminate the message queue
     int receivedMessagesCount = 0;
     
+    //This loop goign to run until receiver 2 has received 5000 messages
     while(receivedMessagesCount < 5000) {
         //Waits until a message with the proper message type specified by
         //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
@@ -94,14 +97,12 @@ int main() {
             }
         }
     }
-    cout << receivedMessagesCount << endl;
-    cout << "5000 reached, Closing message queue" << endl;
     //Send a stop notification message to sender 257
     strcpy(sentMessage.message, "Terminated");
     sentMessage.messageType = TERMINATE_MESSAGE_TYPE;
     sentMessage.senderId = SENDER_ID;
     msgsnd(messageQueueId, (struct msgbuf *)&sentMessage, MESSAGE_SIZE, MESSAGE_FLAG);
-    //This receiver has received 5000 messages, begin closing the queue
+    cout << "Connection disconnected" << endl;
     //Exit the program
     exit(0);
 }

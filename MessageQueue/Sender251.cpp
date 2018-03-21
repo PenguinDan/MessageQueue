@@ -1,4 +1,5 @@
 /*
+ - File Name: Sender251
  - Sends each event to only ONE RECEIVER
  - Does not accept any acknowledgement messages
  - Terminates on "KILL" COMMAND FROM A SEPARATE TERMINAL
@@ -34,6 +35,13 @@ const int SENT_MESSAGE_TYPE = 1;
 const int MAX_RANDOM_NUM = 200000000;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
+
+//Forward declaring methods
+int generateRandomNum();
+void initializeSRand();
+int allocateQueue();
+void setExitMessage(int);
+
 //Message buffer
 struct buffer{
     //Define the mtype
@@ -45,14 +53,13 @@ struct buffer{
     
 };
 
-int generateRandomNum();
-void initializeSRand();
-int allocateQueue();
-void setExitMessage(int);
-
+/*
+ * The main starting point of the application
+ */
 int main(){
+    //Get the message queue id
     int messageQueueId = msgget(ftok(".",'u'), 0);
-    cout << "Connecting to Message Queue Id: " << messageQueueId << endl;
+    cout << "Connecting to Message Queue ID: " << messageQueueId << endl;
     buffer sentMessage;
     int numGenerated;
 
@@ -73,6 +80,7 @@ int main(){
     }
     exit(0);
 }
+
 /*
  Sets the termination messaget that will be sent when patch code executes
  @Param: The ID of the message queue

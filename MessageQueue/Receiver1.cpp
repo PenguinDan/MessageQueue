@@ -1,10 +1,11 @@
 /*
- * Each receiver repeatedly gets a message and displays the value and the Sender’s identity
- * Receiver #1
- *    Accepts from who:
- *       Only accepts messages from 251 AND 997 SENDERS
- *    Termination cause:
- *       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
+ - File Name: Receiver1
+ - Each receiver repeatedly gets a message and displays the value and the Sender’s identity
+ - Receiver #1
+ -    Accepts from who:
+ -       Only accepts messages from 251 AND 997 SENDERS
+ -    Termination cause:
+ -       Terminates after BOTH OF ITS SENDERS HAVE TERMINATED
  */
 
 //All of the necessary libraries for the program to run
@@ -30,6 +31,10 @@ const int MAX_MESSAGES = 5000;
 const int RECEIVABLE_MESSAGE_TYPE = 1;
 //Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
+
+//Forward declaring methods
+int retrieveMessageSize(buffer);
+
 //Message buffer
 struct buffer{
     //Define the mtype
@@ -39,8 +44,6 @@ struct buffer{
     //Define message size
     char message[ARRAY_SIZE];
 };
-//Forward declaring methods
-int retrieveMessageSize(buffer);
 
 /*
  * The main starting point of the application
@@ -102,6 +105,7 @@ int main() {
         }
     }
     msgctl(messageQueueId, IPC_RMID, NULL);
+    exit(0);
     
   //Both Sender 251 and Sender 997 have terminated
 }

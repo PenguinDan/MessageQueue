@@ -1,4 +1,5 @@
 /*
+ - File Name: Sender257
  - Sends each event to only ONE RECEIVER
  - Does not accept any acknowledgement messages
  - Terminates when ITS RECEIVER STOPS RECEIVING EVENT NOTIFICATIONS
@@ -27,13 +28,17 @@ const int ARRAY_SIZE = 50;
 const int MESSAGE_TYPE = 2;
 //Defines the termination message type in which this message could receive
 const int RECEIVABLE_MESSAGE_TYPE = 10;
-//Defines the message flag stating that the first message on the queue is received
 //Start process mtype
 const int START_MESSAGE_TYPE = 500;
-
+//Defines the message flag stating that the first message on the queue is received
 const int MESSAGE_FLAG = 0;
-//Define the max number that a randon can generate
+//Define the max number that a random number generator can generate
 const int MAX_RANDOM_NUM = 5000000;
+
+//Forward declaring methods
+int generateRandomNum();
+void initializeSRand();
+int retrieveMessageSize(buffer);
 
 //Message buffer
 struct buffer{
@@ -45,24 +50,22 @@ struct buffer{
     char message[ARRAY_SIZE];
 };
 
-//Forward declaring methods
-int generateRandomNum();
-void initializeSRand();
-int retrieveMessageSize(buffer);
-
+/*
+ * The main starting point of the application
+ */
 int main(){
-    //Create a message queue for other programs to connect to
+    //Get the message queue id
     int messageQueueId = msgget(ftok(".", 'u'), 0);
     bool receiveNotifications = true;
     int numGenerated;
+    //Keep track of how many message had been send
     int numOfMessagesSent;
     initializeSRand();
     //Message that prints out the message queue ID for easy deallocation
     //from the terminal
-    cout << "Connect to Message Queue ID: " << messageQueueId << endl;
+    cout << "Connected Message Queue ID: " << messageQueueId << endl;
     //Build buffer for sent message to receiver 2
     buffer sendMessage;
-    buffer receivedMessage;
     //Set MESSAGE_SIZE
     int MESSAGE_SIZE = retrieveMessageSize(sendMessage);
     //Wait to receieve message from 997;
@@ -83,7 +86,8 @@ int main(){
             numOfMessagesSent++;
         }
     }
-    cout << "Disconnect connection..." << endl;
+    cout << "Connection disconected..." << endl;
+    exit(0);
 }
 
 /*
@@ -99,12 +103,20 @@ int retrieveMessageSize(buffer message) {
     return sizeof(message) - sizeof(long) - sizeof(long);
 }
 
-//Generate a random number
+/*
+ Generate a random number
+ @Param: None
+ @Return: An integer value from 0 to 5,000,000;
+ */
 int generateRandomNum(){
     return rand() % MAX_RANDOM_NUM;
 }
 
-//Inititalize srand to the internal with the internal clokc of the computer
+/*
+ Inititalize srand to the internal with the internal clock of the computer
+ @Param: None
+ @Return: None
+ */
 void initializeSRand(){
     srand((int) time(NULL));
 }
