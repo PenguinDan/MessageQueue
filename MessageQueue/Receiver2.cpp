@@ -78,7 +78,7 @@ int main() {
         //the constant RECEIVABLE_MESSAGE_TYPE is the current first message
         //in the message queue
         if(msgrcv(messageQueueId, (struct msgbuf *)&receivedMessage, MESSAGE_SIZE,
-                  RECEIVABLE_MESSAGE_TYPE, IPC_NOWAIT) != -1){
+                  RECEIVABLE_MESSAGE_TYPE, MESSAGE_FLAG) != -1){
             //The message has been received, specify which sender the message
             //was received from and the message
             cout << "Message from Sender #" << receivedMessage.senderId <<
